@@ -67,15 +67,15 @@ def search_zlib(title, authors, language=None):
             'query': query,
             'limit': 5
         }
+        time.sleep(1)
         try:
             r = sess.get(API_URL, params=params, timeout=10)
+            r_json = r.json()
         except requests.ConnectionError as e:
             print(f'error {e}')
             time.sleep(10)
             continue
 
-        time.sleep(1)
-        r_json = r.json()
         if r.status_code == 200 and r_json['books']:
             for media_item in r_json['books']:
                 filename = "%s - %s.%s"%(media_item['title'][:50], media_item['author'][:50].strip(), media_item['extension'])
@@ -144,7 +144,9 @@ def main():
                          and x['id'] not in blacklist]
 
     for book in req_books_reduced:
-        hits = search_zlib(book['title'], book['authors'], language=book['lang_code'])
+        title = book['title'].replace('"', '')
+        authors = [x.replace('"', '') for x in book['authors']]
+        hits = search_zlib(title, authors, language=book['lang_code'])
         if hits:
             print(book['title'])
             print(' ' * 2 + book['url'])

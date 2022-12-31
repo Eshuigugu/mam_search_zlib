@@ -37,7 +37,7 @@ else:
 # find a working mirror
 for tries_remaining, API_URL in list(enumerate(['https://zlibrary.shuziyimin.org/search', 'https://zlib.knat.network/search', 'https://zlib.zu1k.com/search']))[::-1]:
     try:
-        sess.get(API_URL, params={'query': ''}, timeout=10)
+        sess.get(API_URL, params={'query': ''}, timeout=10).json()
     except:
         if tries_remaining == 0:
             raise
